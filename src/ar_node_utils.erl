@@ -526,7 +526,7 @@ validate(
 		[
 			{block_validation_results, ar_util:encode(NewB#block.indep_hash)},
 			{height, NewB#block.height},
-			{block_mine_validate, Mine},
+			{block_mine_validate, BDSHash},
 			{block_wallet_validate, Wallet},
 			{block_indep_validate, IndepRecall},
 			{block_txs_validate, Txs},
@@ -574,7 +574,7 @@ validate(
 	case CumulativeDiffCheck of false -> ar:d(invalid_cumulative_diff); _ -> ok  end,
 	case BHLMerkleCheck of false -> ar:d(invalid_hash_list_merkle); _ -> ok  end,
 
-	(Mine =/= false)
+	(Mine
 		andalso Wallet
 		andalso IndepRecall
 		andalso Txs
