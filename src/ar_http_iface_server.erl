@@ -836,6 +836,31 @@ post_block(check_height, {B, CurrentB, ReqStruct, OrigPeer}) ->
 		_ ->
 			post_block(post_block, {B, ReqStruct, OrigPeer})
 	end;
+post_block(check_pow, {B, ReqStruct, OrigPeer}) ->
+	%% Todo: Use FORK_1_7 insted of making it optional
+	case lists:keyfind(<<"block_data_segment_hash">>, 1, ReqStruct) of
+		{_, DataSegmentHash} ->
+			case ar_mine:validate(ar_util:decode(DataSegmentHash), B#block.nonce, NewB#block.diff) of
+				false ->
+					{400, [], <<"Invalid Block Work">>};
+				_  ->
+					ar_bridge:ignore_id(DataSegment),
+					post_block(post_block, {NewB, PrevB, OrigPeer, BlockSet})
+			end;
+		false ->
+
+	end
+		{ok, DataSegment} ->
+			case ar_mine:validate(ar_util:decode(DataSegment), NewB#block.nonce, NewB#block.diff) of
+				false ->
+					{400, [], <<"Invalid Block Work">>};
+				_  ->
+					ar_bridge:ignore_id(DataSegment),
+					post_block(post_block, {NewB, PrevB, OrigPeer, BlockSet})
+			end;
+		error -> % skip pow check until internal validation
+			post_block(post_block, {B, ReqStruct, OrigPeer})
+	end;
 post_block(post_block, {B, ReqStruct, OrigPeer}) ->
 	% Everything fine, post block.
 	spawn(
