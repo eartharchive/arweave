@@ -260,11 +260,9 @@ next_diff(CurrentB) ->
 %% @doc Validate that a given hash/nonce satisfy the difficulty requirement.
 validate(DataSegment, Nonce, Diff) ->
 	NewDiff = adjust_for_min_diff(Diff),
-	case ar_weave:hash(DataSegment, Nonce) of
-		<< 0:NewDiff, _/bitstring >> = Hash ->
-			{true, Hash};
-		_ ->
-			false
+	case NewHash = ar_weave:hash(DataSegment, Nonce) of
+		<< 0:NewDiff, _/bitstring >> -> NewHash;
+		_ -> false
 	end.
 
 %% @doc Validate that a given block data segment hash satisfies the difficulty requirement.
