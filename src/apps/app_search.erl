@@ -87,7 +87,8 @@ update_tag_table(B) when ?IS_BLOCK(B) ->
 			add_entry(<<"from">>, ar_util:encode(ar_wallet:to_address(TX#tx.owner)), TX#tx.id),
 			add_entry(<<"to">>, ar_util:encode(ar_wallet:to_address(TX#tx.target)), TX#tx.id),
 			add_entry(<<"quantity">>, TX#tx.quantity, TX#tx.id),
-			add_entry(<<"reward">>, TX#tx.reward, TX#tx.id)
+			add_entry(<<"reward">>, TX#tx.reward, TX#tx.id),
+			add_entry(<<"block_indep_hash">>, ar_util:encode(B#block.indep_hash), TX#tx.id)
 		end,
 		ar_storage:read_tx(B#block.txs)
 	);
