@@ -755,7 +755,8 @@ get_tx_status_test() ->
 	{Res} = ar_serialize:dejsonify(Body),
 	HashList = ar_node:get_hash_list(hd(Peers)),
 	?assertEqual(true, lists:member({<<"block_height">>, length(HashList) - 1}, Res)),
-	?assertEqual(true, lists:member({<<"block_indep_hash">>, ar_util:encode(hd(HashList))}, Res)).
+	?assertEqual(true, lists:member({<<"block_indep_hash">>, ar_util:encode(hd(HashList))}, Res)),
+	?assertEqual(true, lists:member({<<"number_of_confirmations">>, 0}, Res)).
 
 %	Node = ar_node:start([], B0),
 %	ar_http_iface_server:reregister(Node),
